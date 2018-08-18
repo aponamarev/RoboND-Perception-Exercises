@@ -5,13 +5,12 @@ from pcl_helper import *
 
 
 def rgb_to_hsv(rgb_list):
-    rgb_normalized = [1.0*rgb_list[0]/255, 1.0*rgb_list[1]/255, 1.0*rgb_list[2]/255]
+    rgb_normalized = [1.0 * rgb_list[0] / 255, 1.0 * rgb_list[1] / 255, 1.0 * rgb_list[2] / 255]
     hsv_normalized = matplotlib.colors.rgb_to_hsv([[rgb_normalized]])[0][0]
     return hsv_normalized
 
 
 def compute_color_histograms(cloud, using_hsv=False):
-
     # Compute histograms for the clusters
     point_colors_list = []
 
@@ -32,15 +31,15 @@ def compute_color_histograms(cloud, using_hsv=False):
         channel_1_vals.append(color[0])
         channel_2_vals.append(color[1])
         channel_3_vals.append(color[2])
-    
-    # TODO: Compute histograms
 
-    # TODO: Concatenate and normalize the histograms
+    # Compute histograms
+    channel_1_vals, channel_2_vals, channel_3_vals = [np.histogram(x, bins=32, range=(0, 256))
+                                                      for x in [channel_1_vals, channel_2_vals, channel_3_vals]]
 
-    # Generate random features for demo mode.  
-    # Replace normed_features with your feature vector
-    normed_features = np.random.random(96) 
-    return normed_features 
+    # Concatenate and normalize the histograms
+    hist_features = np.concatenate((channel_1_vals, channel_2_vals, channel_3_vals)).astype(np.float64)
+    normed_features = hist_features / np.sum(hist_features)
+    return normed_features
 
 
 def compute_normal_histograms(normal_cloud):
@@ -49,18 +48,18 @@ def compute_normal_histograms(normal_cloud):
     norm_z_vals = []
 
     for norm_component in pc2.read_points(normal_cloud,
-                                          field_names = ('normal_x', 'normal_y', 'normal_z'),
+                                          field_names=('normal_x', 'normal_y', 'normal_z'),
                                           skip_nans=True):
         norm_x_vals.append(norm_component[0])
         norm_y_vals.append(norm_component[1])
         norm_z_vals.append(norm_component[2])
 
-    # TODO: Compute histograms of normal values (just like with color)
+    # Compute histograms of normal values (just like with color)
+    norm_x_vals, norm_y_vals, norm_z_vals = [np.histogram(x, bins=32, range=(0, 256))
+                                             for x in [norm_x_vals, norm_y_vals, norm_z_vals]]
 
-    # TODO: Concatenate and normalize the histograms
-
-    # Generate random features for demo mode.  
-    # Replace normed_features with your feature vector
-    normed_features = np.random.random(96)
+    # Concatenate and normalize the histograms
+    hist_features = np.concatenate((norm_x_vals, norm_y_vals, norm_z_vals)).astype(np.float64)
+    normed_features = hist_features / np.sum(hist_features)
 
     return normed_features
