@@ -56,10 +56,10 @@ def compute_normal_histograms(normal_cloud):
 
     # Compute histograms of normal values (just like with color)
     norm_x_vals, norm_y_vals, norm_z_vals = [np.histogram(x, bins=32, range=(0, 256))
-                                             for x in [norm_x_vals[0], norm_y_vals[0], norm_z_vals[0]]]
+                                             for x in [norm_x_vals, norm_y_vals, norm_z_vals]]
 
     # Concatenate and normalize the histograms
-    hist_features = np.concatenate((norm_x_vals, norm_y_vals, norm_z_vals)).astype(np.float64)
+    hist_features = np.concatenate((norm_x_vals[0], norm_y_vals[0], norm_z_vals[0])).astype(np.float64)
     normed_features = hist_features / np.sum(hist_features)
 
     return normed_features
