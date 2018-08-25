@@ -40,7 +40,7 @@ if __name__ == '__main__':
         spawn_model(model_name)
 
         for i in range(50):
-            # make five attempts to get a valid a point cloud then give up
+            # make 50 attempts to get a valid a point cloud then give up
             sample_was_good = False
             try_count = 0
             while not sample_was_good and try_count < 5:
