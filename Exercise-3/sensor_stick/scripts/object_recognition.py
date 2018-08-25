@@ -115,16 +115,6 @@ def pcl_callback(pcl_msg):
     cluster_cloud = pcl.PointCloud_PointXYZRGB()
     cluster_cloud.from_list(color_cluster_point_list)
 
-    # Convert PCL data to ROS messages
-    table_pcl_msg = pcl_to_ros(table)
-    objects_pcl_msg = pcl_to_ros(objects)
-    ros_cluster_cloud = pcl_to_ros(cluster_cloud)
-
-    # Publish ROS messages
-    pcl_objects_pub.publish(objects_pcl_msg)
-    pcl_table_pub.publish(table_pcl_msg)
-    pcl_clusters_pub.publish(ros_cluster_cloud)
-
     # Classify the clusters! (loop through each detected cluster one at a time)
     detected_objects_labels = []
     detected_objects = []
