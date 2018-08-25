@@ -61,6 +61,19 @@ def pcl_callback(pcl_msg):
     # filter out points
     cloud_filtered = passthrough.filter()
 
+    # Statistical Outlier Filtering
+    # create filter
+    outlier_filter = cloud_filtered.make_statistical_outlier_filter()
+    # set number of neighbors used to evaluate point distance from the neighborhood mean
+    outlier_filter.set_mean_k(50)
+    # set threshold factor - the multiplier of the global standard deviation. Every point, who's distance from the
+    # neighbourhood mean is greater than distance specified by global mean and standard deviation (scaled by the
+    # multiplier), considered to be an outlier and is removed from the data
+    x = 1.0
+    outlier_filter.set_std_dev_mul_thresh(x)
+    # create filter
+    outlier_filter = outlier_filter.filter()
+
     # RANSAC Plane Segmentation
     # create a segmentation filter
     seg = cloud_filtered.make_segmenter()
@@ -69,7 +82,7 @@ def pcl_callback(pcl_msg):
     # set segmentation method
     seg.set_method_type(pcl.SAC_RANSAC)
     # set point threshold to be considered an outlier
-    max_distance = 0.01
+    max_distance = 1.0
     seg.set_distance_threshold(max_distance)
     # obtain model coefficients and inlier indices
     inliers, coefficients = seg.segment()
