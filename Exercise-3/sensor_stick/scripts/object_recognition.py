@@ -115,6 +115,16 @@ def pcl_callback(pcl_msg):
     cluster_cloud = pcl.PointCloud_PointXYZRGB()
     cluster_cloud.from_list(color_cluster_point_list)
 
+    # Convert PCL data to ROS messages
+    table_pcl_msg = pcl_to_ros(table)
+    objects_pcl_msg = pcl_to_ros(objects)
+    ros_cluster_cloud = pcl_to_ros(cluster_cloud)
+
+    # Publish ROS messages
+    pcl_objects_pub.publish(objects_pcl_msg)
+    pcl_table_pub.publish(table_pcl_msg)
+    pcl_clusters_pub.publish(ros_cluster_cloud)
+
     # Classify the clusters! (loop through each detected cluster one at a time)
     detected_objects_labels = []
     detected_objects = []
@@ -163,6 +173,9 @@ if __name__ == '__main__':
     # Create Publishers
     object_markers_pub = rospy.Publisher("/object_markers", Marker, queue_size=10)
     detected_objects_pub = rospy.Publisher("/detected_objects", DetectedObjectsArray, queue_size=10)
+    pcl_objects_pub = rospy.Publisher("/pcl_objects", PointCloud2, queue_size=1)
+    pcl_table_pub = rospy.Publisher("/pcl_table", PointCloud2, queue_size=1)
+    pcl_clusters_pub = rospy.Publisher("/pcl_clusters", PointCloud2, queue_size=1)
 
     # Load Model From disk
     model = pickle.load(open('model.sav', 'rb'))
