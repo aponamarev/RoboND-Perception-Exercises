@@ -45,7 +45,7 @@ def pcl_callback(pcl_msg):
     passthrough = cloud_filtered.make_passthrough_filter()
     # Pass through z axis - specify axis and the range
     filter_axis = 'z'
-    axis_min = 0.5
+    axis_min = 0.77
     axis_max = 5.0
     passthrough.set_filter_field_name(filter_axis)
     passthrough.set_filter_limits(axis_min, axis_max)
@@ -82,7 +82,7 @@ def pcl_callback(pcl_msg):
     # set segmentation method
     seg.set_method_type(pcl.SAC_RANSAC)
     # set point threshold to be considered an outlier
-    max_distance = 1.0
+    max_distance = 0.01
     seg.set_distance_threshold(max_distance)
     # obtain model coefficients and inlier indices
     inliers, coefficients = seg.segment()
@@ -103,7 +103,7 @@ def pcl_callback(pcl_msg):
     # Create a cluster extraction object
     ec = white_cloud.make_EuclideanClusterExtraction()
     # Set tolerances for distance threshold
-    ec.set_ClusterTolerance(0.01)
+    ec.set_ClusterTolerance(0.06)
     # as well as minimum and maximum cluster size (in points)
     ec.set_MinClusterSize(50)
     ec.set_MaxClusterSize(10000)
